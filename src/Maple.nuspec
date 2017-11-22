@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Maple</id>
+    <title>Maple</title>
+    <version>$version$</version>
+    <authors>Brian Kim</authors>
+    <owners>Wilderness Labs</owners>
+    <licenseUrl>https://github.com/WildernessLabs/Netduino.Foundation/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/WildernessLabs/Netduino.Foundation</projectUrl>
+    <!--    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Sweet and simple web server</description>
+    <!--    <releaseNotes>First release on Nuget.</releaseNotes> -->
+    <copyright>Copyright 2017 Wilderness Labs</copyright>
+    <tags>NETMF Netduino</tags>
+    <!-- NET MF assemblies needed for core to build -->
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware" targetFramework="netmf" />
+      <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware.PWM" targetFramework="netmf" />
+      <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware.SerialPort" targetFramework="netmf" />
+      <frameworkAssembly assemblyName="Microsoft.SPOT.Native" targetFramework="netmf" />
+      <frameworkAssembly assemblyName="Microsoft.SPOT.TinyCore" targetFramework="netmf" />
+    </frameworkAssemblies>
+  </metadata>
+  <!-- files to put into the nuget package. target is where they get put into the package. -->
+  <files>
+    <file src="bin\Release\le\Maple.*" target="lib\netmf43\le" />
+    <file src="bin\Release\be\Maple.*" target="lib\netmf43\be" />
+    <file src="bin\Release\Maple.*" target="lib\netmf43" />
+  </files>
+</package>
