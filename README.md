@@ -1,6 +1,6 @@
 ![Maple](Supporting_Files/Design/Maple_Banner.png)
 
-Maple is an ultra-lightweight RESTful web server built specifically for network enabled Netduino devices. It's fully .NET MicroFramework 4.3 compatible and provides an easy to extend architecture.
+Maple is an ultra-lightweight RESTful web server built specifically for network enabled Netduino devices. It's fully .NET MicroFramework 4.3 compatible, provides an easy to extend architecture, and has native JSON support.
 
 # Adding Maple to your Project
 
@@ -12,7 +12,7 @@ PM> Install-Package maple
 
 # Creating an Endpoint
 
-To create an API endpoint create a class that inherits from `RequestHandlerBase`:
+To create an API endpoint create a class that inherits from `RequestHandler`:
 
 ```csharp
 public class RequestHandler : RequestHandlerBase
@@ -23,10 +23,8 @@ public class RequestHandler : RequestHandlerBase
 
     public void getDoSomething()
     {
-        this.Context.Response.ContentType = "application/json";
-        this.Context.Response.StatusCode = 200;
-        Hashtable result = new Hashtable { { "message", "hello world!" } };
-        this.Send(result);
+      this.Context.Response.StatusCode = 200;
+      WriteToOutputStream(ledStatus.ToString());
     }
 }
 ```
@@ -52,9 +50,9 @@ server.Start();
 Next, you can make a GET request to http://[NetduinoAddress]/DoSomething
 
 
-# Query String Parameters
+# Query String and Form Post Parameters
 
-Maple parses query string parameters during requests and makes them available via the `QueryString` hashtable. 
+Maple parses query string and form post parameters during requests and makes them available via the `QueryString` or `Form` hashtable, respectively. 
 
 For example to pass an `ID` parameter to the `DoSomething` handler, append `?ID=[value]` to the request:
 
@@ -65,7 +63,13 @@ http://[NetduinoAddress]/DoSomething?id=298
 The `getDoSomething` method can then access the `ID` parameter via:
 
 ```csharp
-var id = base.QueryString[ID];
+var id = base.QueryString["ID"];
+```
+
+Similarly, a form post field of `ID` can be accessed via the `Form` object:
+
+```csharp
+var id = base.Form["ID"];
 ```
 
 # Configuring the Network Interface
