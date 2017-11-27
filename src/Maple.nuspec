@@ -2,18 +2,16 @@
 <package >
   <metadata>
     <id>Maple</id>
-    <title>Maple</title>
+    <title>Maple, a simple Netduino web server</title>
     <version>$version$</version>
     <authors>Brian Kim</authors>
     <owners>Wilderness Labs</owners>
-    <licenseUrl>https://github.com/WildernessLabs/Netduino.Foundation/blob/master/LICENSE</licenseUrl>
-    <projectUrl>https://github.com/WildernessLabs/Netduino.Foundation</projectUrl>
-    <!--    <iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <licenseUrl>https://github.com/WildernessLabs/Maple/blob/master/Licenses/Apache2_License.md</licenseUrl>
+    <projectUrl>https://github.com/WildernessLabs/Maple</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Sweet and simple web server</description>
-    <!--    <releaseNotes>First release on Nuget.</releaseNotes> -->
+    <description>Maple is an ultra-lightweight RESTful web server built specifically for network enabled Netduino devices. It's fully .NET MicroFramework 4.3 compatible and provides an easy to extend architecture.</description>
     <copyright>Copyright 2017 Wilderness Labs</copyright>
-    <tags>NETMF Netduino</tags>
+    <tags>NETMF Netduino web server</tags>
     <!-- NET MF assemblies needed for core to build -->
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware" targetFramework="netmf" />
