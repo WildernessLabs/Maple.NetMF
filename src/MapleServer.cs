@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections;
+using System.Text;
 
 namespace Maple
 {
@@ -11,6 +12,7 @@ namespace Maple
     {
         private HttpListener server;
         private Thread connection;
+        private Thread broadcast;
 
         /// <param name="prefix">http or https</param>
         public MapleServer(string prefix, int port)
@@ -60,7 +62,7 @@ namespace Maple
             {
                 try
                 {
-                    
+
                     HttpListenerContext context = server.GetContext();
                     string[] urlQuery = context.Request.RawUrl.Substring(1).Split('?');
                     string[] urlParams = urlQuery[0].Split('/');
@@ -106,13 +108,60 @@ namespace Maple
                 {
                     Debug.Print("Socked Exception: " + e.ToString());
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.Print(ex.ToString());
                 }
             }
         }
+
+        public void Broadcast(string message, int port)
+        {
+            Broadcast(message, port, 0);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="port"></param>
+        /// <param name="interval">in milliseconds</param>
+        public void Broadcast(string message, int port, int interval)
+        {
+            broadcast = new Thread(delegate () { BroadcastWorker(message, port, interval); });
+            broadcast.Start();
+        }
+
+        protected void BroadcastWorker(string message, int port, int interval)
+        {
+            IPEndPoint broadcastEndPoint = new IPEndPoint(IPAddress.Any, port);
+            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            try
+            {
+                var payload = Encoding.UTF8.GetBytes(message);
+
+                while (true)
+                {
+                    socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+                    socket.Bind(broadcastEndPoint);
+                    socket.SendTo(payload, broadcastEndPoint);
+                    socket.Close();
+                    Debug.Print(message + " broadcasted");
+
+                    if (interval > 0)
+                    {
+                        Thread.Sleep(interval);
+                        socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            finally
+            {
+                socket.Close();
+            }
+        }
     }
 }
-
-// nuget pack Maple.csproj -Prop Configuration=Release -Prop Platform=AnyCPU
