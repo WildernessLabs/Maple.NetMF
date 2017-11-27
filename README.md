@@ -47,9 +47,6 @@ MapleServer server = new MapleServer();
 server.Start();
 ```
 
-Next, you can make a GET request to http://[NetduinoAddress]/DoSomething
-
-
 # Query String and Form Post Parameters
 
 Maple parses query string and form post parameters during requests and makes them available via the `QueryString` or `Form` hashtable, respectively. 
