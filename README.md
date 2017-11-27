@@ -25,7 +25,7 @@ public class RequestHandler : RequestHandlerBase
     {
         this.Context.Response.ContentType = "application/json";
         this.Context.Response.StatusCode = 200;
-        Hashtable result = new Hashtable { { "isPowerOn", _isPowerOn.ToString().ToLower() } };
+        Hashtable result = new Hashtable { { "message", "hello world!" } };
         this.Send(result);
     }
 }
