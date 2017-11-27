@@ -23,8 +23,10 @@ public class RequestHandler : RequestHandlerBase
 
     public void getDoSomething()
     {
-      this.Context.Response.StatusCode = 200;
-      WriteToOutputStream("hello world!");
+        this.Context.Response.ContentType = "application/json";
+        this.Context.Response.StatusCode = 200;
+        Hashtable result = new Hashtable { { "isPowerOn", _isPowerOn.ToString().ToLower() } };
+        this.Send(result);
     }
 }
 ```
