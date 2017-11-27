@@ -12,7 +12,7 @@ PM> Install-Package maple
 
 # Creating an Endpoint
 
-To create an API endpoint create a class that inherits from `RequestHandler`:
+To create an API endpoint create a class that inherits from `RequestHandlerBase`:
 
 ```csharp
 public class RequestHandler : RequestHandlerBase
@@ -23,8 +23,10 @@ public class RequestHandler : RequestHandlerBase
 
     public void getDoSomething()
     {
-      this.Context.Response.StatusCode = 200;
-      WriteToOutputStream(ledStatus.ToString());
+        this.Context.Response.ContentType = "application/json";
+        this.Context.Response.StatusCode = 200;
+        Hashtable result = new Hashtable { { "isPowerOn", _isPowerOn.ToString().ToLower() } };
+        this.Send(result);
     }
 }
 ```
