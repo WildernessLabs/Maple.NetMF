@@ -40,9 +40,7 @@ Currently, Maple supports _Get_ and _Post_ verbs.
 
 ## Starting the Server
 
-In order for Maple to run, you must start the server at the beginning 
-
-Then, start the server
+In order for Maple to run, you must start the server before it will run. To start the server, instantiate a new `MapleServer` object, and call the `Start` method:
 
 ```csharp
 MapleServer server = new MapleServer();
