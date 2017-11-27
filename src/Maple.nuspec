@@ -12,7 +12,9 @@
     <description>Maple is an ultra-lightweight RESTful web server built specifically for network enabled Netduino devices. It's fully .NET MicroFramework 4.3 compatible and provides an easy to extend architecture.</description>
     <copyright>Copyright 2017 Wilderness Labs</copyright>
     <tags>NETMF Netduino web server</tags>
-    <!-- NET MF assemblies needed for core to build -->
+    <dependencies>
+      <dependency id="Json.NetMF" version="1.3.0" />
+    </dependencies>
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware" targetFramework="netmf" />
       <frameworkAssembly assemblyName="Microsoft.SPOT.Hardware.PWM" targetFramework="netmf" />
