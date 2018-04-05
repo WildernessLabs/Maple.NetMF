@@ -7,48 +7,71 @@ using System.Collections;
 
 namespace Maple
 {
-    public class MapleServer
+    public partial class MapleServer
     {
         private HttpListener server;
         private Thread connection;
+        private ArrayList handlers;
 
         /// <param name="prefix">http or https</param>
         public MapleServer(string prefix, int port)
         {
+            handlers = new ArrayList();
             server = new HttpListener(prefix, port);
             server.Start();
         }
 
         public void Start()
         {
-            connection = new Thread(Context);
+            ThreadStart starter = delegate { Context(handlers); };
+            connection = new Thread(starter);
             connection.Start();
+        }
+
+        public void Stop()
+        {
+            if (connection.IsAlive)
+            {
+                connection.Abort();
+            }
+        }
+
+        public void AddHandler(IRequestHandler handler)
+        {
+            this.handlers.Add(handler);
+        }
+
+        public void RemoveHandler(IRequestHandler handler)
+        {
+            this.handlers.Remove(handler);
         }
 
         public MapleServer() : this("http", -1) { }
 
-        protected void Context()
+        protected void Context(ArrayList requestHandlers)
         {
-            // Get classes that implement IRequestHandler
-            var type = typeof(IRequestHandler);
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var handlers = new ArrayList();
-
-            foreach (var assembly in assemblies)
+            if (requestHandlers.Count == 0)
             {
-                var types = assembly.GetTypes();
-                foreach (var t in types)
+                // Get classes that implement IRequestHandler
+                var type = typeof(IRequestHandler);
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+                foreach (var assembly in assemblies)
                 {
-                    if (t.BaseType != null)
+                    var types = assembly.GetTypes();
+                    foreach (var t in types)
                     {
-                        var interfaces = t.BaseType.GetInterfaces();
-                        if (interfaces.Length > 0)
+                        if (t.BaseType != null)
                         {
-                            foreach (var inter in interfaces)
+                            var interfaces = t.BaseType.GetInterfaces();
+                            if (interfaces.Length > 0)
                             {
-                                if (inter == typeof(IRequestHandler))
+                                foreach (var inter in interfaces)
                                 {
-                                    handlers.Add(t);
+                                    if (inter == typeof(IRequestHandler))
+                                    {
+                                        requestHandlers.Add(t);
+                                    }
                                 }
                             }
                         }
@@ -56,11 +79,12 @@ namespace Maple
                 }
             }
 
+
             while (true)
             {
                 try
                 {
-                    
+
                     HttpListenerContext context = server.GetContext();
                     string[] urlQuery = context.Request.RawUrl.Substring(1).Split('?');
                     string[] urlParams = urlQuery[0].Split('/');
@@ -72,20 +96,27 @@ namespace Maple
                     // would love to convert this to two attributes: HttpGet, Mapping/Route
                     bool wasMethodFound = false;
 
-                    foreach (var handler in handlers)
+                    foreach (var handler in requestHandlers)
                     {
-                        var methods = ((Type)handler).GetMethods();
+                        Type handlerType = handler is Type ? (Type)handler : handler.GetType();
+                        var methods = handlerType.GetMethods();
                         foreach (var method in methods)
                         {
                             if (method.Name.ToLower() == methodName.ToLower())
                             {
-                                var h = ((Type)handler).GetConstructor(new Type[] { typeof(HttpListenerContext) }).Invoke(new object[] { context });
+                                object target = handler;
+                                if (handler is Type)
+                                {
+                                    target = ((Type)handler).GetConstructor(new Type[] { }).Invoke(new object[] { });
+                                }
                                 try
                                 {
-                                    method.Invoke(h, null);
+                                    ((IRequestHandler)target).Context = context;
+                                    method.Invoke(target, null);
                                 }
                                 catch (Exception ex)
                                 {
+                                    Debug.Print(ex.Message);
                                     context.Response.StatusCode = 500;
                                     context.Response.Close();
                                 }
@@ -106,7 +137,7 @@ namespace Maple
                 {
                     Debug.Print("Socked Exception: " + e.ToString());
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.Print(ex.ToString());
                 }

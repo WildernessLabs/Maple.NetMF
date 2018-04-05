@@ -9,35 +9,48 @@ namespace Maple
     public abstract class RequestHandlerBase : IRequestHandler
     {
         private const int bufferSize = 4096;
-        protected HttpListenerContext Context { get; set; }
         protected Hashtable QueryString { get; set; }
         protected Hashtable Form { get; set; }
-        protected object Body { get; set; }
+        protected Hashtable Body { get; set; }
 
-        protected RequestHandlerBase(HttpListenerContext context)
+        protected RequestHandlerBase()
         {
-            this.Context = context;
+        }
 
-            if (context.Request.RawUrl.Split('?').Length > 1)
+        public HttpListenerContext Context
+        {
+            get { return _context; }
+            set
             {
-                var q = context.Request.RawUrl.Split('?')[1];
-                this.QueryString = ParseUrlPairs(q);
-            }
+                _context = value;
 
-            switch (context.Request.ContentType)
-            {
-                case "application/x-www-form-urlencoded":
-                    this.Form = ParseUrlPairs(ReadInputStream());
-                    break;
-                case "application/json":
-                    this.Body = Json.NETMF.JsonSerializer.DeserializeString(ReadInputStream());
-                    break;
+                if (_context.Request.RawUrl.Split('?').Length > 1)
+                {
+                    var q = _context.Request.RawUrl.Split('?')[1];
+                    this.QueryString = ParseUrlPairs(q);
+                }
+
+                switch (_context.Request.ContentType)
+                {
+                    case ContentTypes.Application_Form_UrlEncoded:
+                        this.Form = ParseUrlPairs(ReadInputStream());
+                        break;
+                    case ContentTypes.Application_Json:
+                        this.Body = Json.NETMF.JsonSerializer.DeserializeString(ReadInputStream()) as Hashtable;
+                        break;
+                }
             }
+        }
+        private HttpListenerContext _context;
+
+        protected void Send()
+        {
+            Send(null);
         }
 
         protected void Send(object output)
         {
-            if(this.Context.Response.ContentType == "application/json")
+            if(this.Context.Response.ContentType == ContentTypes.Application_Json)
             {
                 var json = Json.NETMF.JsonSerializer.SerializeObject(output);
                 WriteOutputStream(Encoding.UTF8.GetBytes(json));
@@ -45,7 +58,7 @@ namespace Maple
             else
             {
                 // default is to process output as a string
-                WriteOutputStream(Encoding.UTF8.GetBytes(output.ToString()));
+                WriteOutputStream(Encoding.UTF8.GetBytes(output != null ? output.ToString() : string.Empty));
             }
         }
 
