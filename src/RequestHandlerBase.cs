@@ -15,6 +15,9 @@ namespace Maple
 
         protected RequestHandlerBase()
         {
+            this.Body = new Hashtable();
+            this.QueryString = new Hashtable();
+            this.Form = new Hashtable();
         }
 
         public HttpListenerContext Context
