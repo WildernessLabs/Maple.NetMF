@@ -16,8 +16,6 @@ namespace Maple
         private Thread connection;
         private ArrayList handlers;
 
-        Socket Socket { get; set; }
-
         /// <param name="prefix">http or https</param>
         public MapleServer(string prefix, int port)
         {
@@ -28,6 +26,7 @@ namespace Maple
 
         public void Start()
         {
+            // spin up server
             Init();
         }
 
@@ -39,7 +38,10 @@ namespace Maple
         /// <param name="interval">Interval to broadcast in millis</param>
         public void Start(string name, string ipaddress, int interval=5000)
         {
-            Broadcast(name + "=" + ipaddress, MAPLE_SERVER_BROADCASTPORT, interval);
+            // start up broadcast on separate thread
+            new Thread(new ThreadStart(delegate { Broadcast(name + "=" + ipaddress, MAPLE_SERVER_BROADCASTPORT, interval); })).Start();
+
+            // spin up server
             Init();
         }
 
@@ -61,7 +63,7 @@ namespace Maple
             this.handlers.Remove(handler);
         }
 
-        public MapleServer() : this("http", 54739) { }
+        public MapleServer() : this("http", -1) { }
 
         protected void Init()
         {
@@ -82,6 +84,7 @@ namespace Maple
                 while (true)
                 {
                     socket.SendTo(UTF8Encoding.UTF8.GetBytes(data), remoteEndPoint);
+                    Debug.Print("UDP Broadcast: " + data + ", port: " + broadcastPort);
                     Thread.Sleep(broadcastInterval);
                 }
             }

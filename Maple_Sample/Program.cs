@@ -17,8 +17,8 @@ namespace Maple_Sample
 
             // start maple server and send name broadcast address
             MapleServer server = new MapleServer();
-            //server.Start("my server", Initializer.CurrentNetworkInterface.IPAddress);
-            server.Start();
+            server.Start("my server", Initializer.CurrentNetworkInterface.IPAddress);
+            
             Thread.Sleep(Timeout.Infinite);
         }
     }
