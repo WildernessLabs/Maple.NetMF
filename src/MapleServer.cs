@@ -4,11 +4,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Collections;
+using System.Text;
 
 namespace Maple
 {
     public partial class MapleServer
     {
+        private const int MAPLE_SERVER_BROADCASTPORT = 17756;
+
         private HttpListener server;
         private Thread connection;
         private ArrayList handlers;
@@ -23,9 +26,23 @@ namespace Maple
 
         public void Start()
         {
-            ThreadStart starter = delegate { Context(handlers); };
-            connection = new Thread(starter);
-            connection.Start();
+            // spin up server
+            Init();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name">Name of the server to be broadcast over UDP</param>
+        /// <param name="ipaddress">IP Address of the server to be broadcast over UDP</param>
+        /// <param name="interval">Interval to broadcast in millis</param>
+        public void Start(string name, string ipaddress, int interval=5000)
+        {
+            // start up broadcast on separate thread
+            new Thread(new ThreadStart(delegate { Broadcast(name + "=" + ipaddress, MAPLE_SERVER_BROADCASTPORT, interval); })).Start();
+
+            // spin up server
+            Init();
         }
 
         public void Stop()
@@ -47,6 +64,31 @@ namespace Maple
         }
 
         public MapleServer() : this("http", -1) { }
+
+        protected void Init()
+        {
+            ThreadStart starter = delegate { Context(handlers); };
+            connection = new Thread(starter);
+            connection.Start();
+        }
+
+        /// <param name="data">string to be broadcast over UDP</param>
+        /// <param name="interval">millis</param>
+        protected void Broadcast(string data, int broadcastPort, int broadcastInterval)
+        {
+            using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp))
+            {
+                EndPoint remoteEndPoint = new IPEndPoint(IPAddress.Parse("255.255.255.255"), broadcastPort);
+                socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.Broadcast, true);
+
+                while (true)
+                {
+                    socket.SendTo(UTF8Encoding.UTF8.GetBytes(data), remoteEndPoint);
+                    Debug.Print("UDP Broadcast: " + data + ", port: " + broadcastPort);
+                    Thread.Sleep(broadcastInterval);
+                }
+            }
+        }
 
         protected void Context(ArrayList requestHandlers)
         {
