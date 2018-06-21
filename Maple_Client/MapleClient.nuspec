@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.8.3">
+    <id>MapleClient</id>
+    <version>0.1.0</version>
+    <title>MapleClient</title>
+    <authors>Brian Kim, Adrian Stevens</authors>
+    <owners>Wilderness Labs</owners>
+    <releaseNotes>First release</releaseNotes>
+    <copyright>Copyright ©2018 Wilderness Labs</copyright>
+    <licenseUrl>https://github.com/WildernessLabs/Netduino.Foundation/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/WildernessLabs/Maple</projectUrl>
+
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      A base client library to detect and interact with Netduino solutions running Maple with UDP
+    </description>
+    <summary>A base client library to detect and interact with Netduino solutions running Maple with UDP</summary>
+    <tags>Netduino,Maple,Wilderness Labs,C#,.NET,Xamarin,Windows</tags>
+    <dependencies>
+      <group targetFramework="netstandard1.3">
+        <dependency id="NETStandard.Library" version="1.6.1" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!--Core-->
+    <file src="MapleClient\bin\Release\netstandard1.3\MapleClient.*" target="lib\netstandard1.3" />
+  </files>
+</package>
