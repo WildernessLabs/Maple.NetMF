@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Netduino.Foundation
+namespace Maple
 {
     public class MapleClient
     {

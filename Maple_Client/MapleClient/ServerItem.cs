@@ -1,4 +1,4 @@
-﻿namespace Netduino.Foundation
+﻿namespace Maple
 {
     public class ServerItem
     {
