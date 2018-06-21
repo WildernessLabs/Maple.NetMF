@@ -3,14 +3,14 @@
   <metadata>
     <id>Maple</id>
     <title>Maple, a simple Netduino web server</title>
-    <version>$version$</version>
+    <version>0.0.9</version>
     <authors>Brian Kim</authors>
     <owners>Wilderness Labs</owners>
     <licenseUrl>https://github.com/WildernessLabs/Maple/blob/master/Licenses/Apache2_License.md</licenseUrl>
     <projectUrl>https://github.com/WildernessLabs/Maple</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Maple is an ultra-lightweight RESTful web server built specifically for network enabled Netduino devices. It's fully .NET MicroFramework 4.3 compatible and provides an easy to extend architecture.</description>
-    <copyright>Copyright 2017 Wilderness Labs</copyright>
+    <copyright>Copyright 2018 Wilderness Labs</copyright>
     <tags>NETMF Netduino web server</tags>
     <dependencies>
       <dependency id="Json.NetMF" version="1.3.0" />
