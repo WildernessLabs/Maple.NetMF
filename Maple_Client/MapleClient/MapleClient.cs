@@ -20,7 +20,7 @@ namespace Maple
             ListenTimeout = ListenTimeout;
         }
 
-        public async Task<List<ServerItem>> FindMapleServers()
+        public async Task<List<ServerItem>> FindMapleServersAsync()
         {
             var hostList = new List<ServerItem>();
             var listener = new UdpClient(ListenPort);
