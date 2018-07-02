@@ -17,7 +17,7 @@ namespace Maple
         public MapleClient (int listenPort = 17756, int listTimeout = 5000)
         {
             ListenPort = listenPort;
-            ListenTimeout = ListenTimeout;
+            ListenTimeout = listenTimeout;
         }
 
         public async Task<List<ServerItem>> FindMapleServersAsync()
