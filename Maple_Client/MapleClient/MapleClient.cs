@@ -14,7 +14,7 @@ namespace Maple
         public int ListenPort { get; set; }
         public int ListenTimeout { get; set; }
 
-        public MapleClient (int listenPort = 17756, int listTimeout = 5000)
+        public MapleClient (int listenPort = 17756, int listenTimeout = 5000)
         {
             ListenPort = listenPort;
             ListenTimeout = listenTimeout;
