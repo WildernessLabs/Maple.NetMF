@@ -87,20 +87,17 @@ namespace Maple
         {
             this.Context.Response.ContentLength64 = data.Length;
 
-            using (this.Context.Response.OutputStream)
-            {
-                int i = 0;
-                byte[] buffer = new byte[bufferSize];
+            int i = 0;
+            byte[] buffer = new byte[bufferSize];
 
-                while (i * bufferSize <= data.Length)
-                {
-                    int min = Min(bufferSize, data.Length - (i * bufferSize));
-                    Array.Copy(data, i * bufferSize, buffer, 0, min);
-                    this.Context.Response.OutputStream.Write(buffer, 0, min);
-                    i++;
-                }
-                this.Context.Response.OutputStream.Flush();
+            while (i * bufferSize <= data.Length)
+            {
+                int min = Min(bufferSize, data.Length - (i * bufferSize));
+                Array.Copy(data, i * bufferSize, buffer, 0, min);
+                this.Context.Response.OutputStream.Write(buffer, 0, min);
+                i++;
             }
+            this.Context.Response.OutputStream.Flush();
         }
 
         private Hashtable ParseUrlPairs(string s)
