@@ -1,5 +1,4 @@
 using System;
-using Microsoft.SPOT;
 using System.Net;
 using System.Collections;
 using System.Text;
@@ -15,9 +14,9 @@ namespace Maple
 
         protected RequestHandlerBase()
         {
-            this.Body = new Hashtable();
-            this.QueryString = new Hashtable();
-            this.Form = new Hashtable();
+            Body = new Hashtable();
+            QueryString = new Hashtable();
+            Form = new Hashtable();
         }
 
         public HttpListenerContext Context
@@ -30,16 +29,16 @@ namespace Maple
                 if (_context.Request.RawUrl.Split('?').Length > 1)
                 {
                     var q = _context.Request.RawUrl.Split('?')[1];
-                    this.QueryString = ParseUrlPairs(q);
+                    QueryString = ParseUrlPairs(q);
                 }
 
                 switch (_context.Request.ContentType)
                 {
                     case ContentTypes.Application_Form_UrlEncoded:
-                        this.Form = ParseUrlPairs(ReadInputStream());
+                        Form = ParseUrlPairs(ReadInputStream());
                         break;
                     case ContentTypes.Application_Json:
-                        this.Body = Json.NETMF.JsonSerializer.DeserializeString(ReadInputStream()) as Hashtable;
+                        Body = Json.NETMF.JsonSerializer.DeserializeString(ReadInputStream()) as Hashtable;
                         break;
                 }
             }
@@ -53,7 +52,7 @@ namespace Maple
 
         protected void Send(object output)
         {
-            if(this.Context.Response.ContentType == ContentTypes.Application_Json)
+            if (Context.Response.ContentType == ContentTypes.Application_Json)
             {
                 var json = Json.NETMF.JsonSerializer.SerializeObject(output);
                 WriteOutputStream(Encoding.UTF8.GetBytes(json));
@@ -67,15 +66,15 @@ namespace Maple
 
         private string ReadInputStream()
         {
-            int i = 0;
-            int len = (int)this.Context.Request.ContentLength64;
-            byte[] buffer = new byte[bufferSize];
-            string result = string.Empty;
+            var len = (int)Context.Request.ContentLength64;
+            var buffer = new byte[bufferSize];
+            var result = string.Empty;
 
+            int i = 0;
             while (i * bufferSize <= len)
             {
                 int min = Min(bufferSize, (len - (i * bufferSize)));
-                this.Context.Request.InputStream.Read(buffer, 0, min);
+                Context.Request.InputStream.Read(buffer, 0, min);
                 result += new String(Encoding.UTF8.GetChars(buffer, 0, min));
                 i++;
             }
@@ -85,25 +84,28 @@ namespace Maple
 
         private void WriteOutputStream(byte[] data)
         {
-            this.Context.Response.ContentLength64 = data.Length;
+            Context.Response.ContentLength64 = data.Length;
+
+            var buffer = new byte[bufferSize];
 
             int i = 0;
-            byte[] buffer = new byte[bufferSize];
-
             while (i * bufferSize <= data.Length)
             {
                 int min = Min(bufferSize, data.Length - (i * bufferSize));
                 Array.Copy(data, i * bufferSize, buffer, 0, min);
-                this.Context.Response.OutputStream.Write(buffer, 0, min);
+                Context.Response.OutputStream.Write(buffer, 0, min);
                 i++;
             }
-            this.Context.Response.OutputStream.Flush();
+            Context.Response.OutputStream.Flush();
         }
 
         private Hashtable ParseUrlPairs(string s)
         {
+            if (s == null || s.IndexOf('&') == -1)
+                return null;
+
             var pairs = s.Split('&');
-            Hashtable result = new Hashtable(pairs.Length);
+            var result = new Hashtable(pairs.Length);
             foreach (var pair in pairs)
             {
                 var keyValue = pair.Split('=');
@@ -114,10 +116,7 @@ namespace Maple
 
         private int Min(int a, int b)
         {
-            if (a <= b)
-                return a;
-            else
-                return b;
+            return ((a <= b)? a : b);
         }
     }
 }

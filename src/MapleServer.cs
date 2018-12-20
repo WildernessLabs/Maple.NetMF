@@ -36,7 +36,7 @@ namespace Maple
         /// <param name="name">Name of the server to be broadcast over UDP</param>
         /// <param name="ipaddress">IP Address of the server to be broadcast over UDP</param>
         /// <param name="interval">Interval to broadcast in millis</param>
-        public void Start(string name, string ipaddress, int interval=5000)
+        public void Start(string name, string ipaddress, int interval = 5000)
         {
             // start up broadcast on separate thread
             new Thread(new ThreadStart(delegate { Broadcast(name + "=" + ipaddress, MAPLE_SERVER_BROADCASTPORT, interval); })).Start();
@@ -55,12 +55,12 @@ namespace Maple
 
         public void AddHandler(IRequestHandler handler)
         {
-            this.handlers.Add(handler);
+            handlers.Add(handler);
         }
 
         public void RemoveHandler(IRequestHandler handler)
         {
-            this.handlers.Remove(handler);
+            handlers.Remove(handler);
         }
 
         public MapleServer() : this("http", -1) { }
@@ -120,7 +120,6 @@ namespace Maple
                     }
                 }
             }
-
 
             while (true)
             {
