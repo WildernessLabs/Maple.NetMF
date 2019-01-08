@@ -3,7 +3,7 @@
   <metadata>
     <id>Maple</id>
     <title>Maple, a simple Netduino web server</title>
-    <version>0.0.13</version>
+    <version>0.13.0.0</version>
     <authors>Brian Kim</authors>
     <owners>Wilderness Labs</owners>
     <licenseUrl>https://github.com/WildernessLabs/Maple/blob/master/Licenses/Apache2_License.md</licenseUrl>
