@@ -186,5 +186,3 @@ namespace Maple
         }
     }
 }
-
-// nuget pack Maple.csproj -Prop Configuration=Release -Prop Platform=AnyCPU

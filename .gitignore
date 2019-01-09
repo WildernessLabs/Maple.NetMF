@@ -130,3 +130,4 @@ UpgradeLog*.XML
 [Tt]humbs.db
 
 *.userprefs
+**/*.nupkg
